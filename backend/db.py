@@ -3,6 +3,8 @@ from sshtunnel import SSHTunnelForwarder
 
 class Database:
     def __init__(self):
+        self.connecting_through_ssh = True
+
         self.server_host = settings.SSH_HOST
         self.server_port = settings.SSH_PORT
         self.server_user = settings.SSH_USER
@@ -15,13 +17,14 @@ class Database:
         self.db_name = settings.DB_NAME
 
 
-        self.server = SSHTunnelForwarder(
-            (self.server_host, self.server_port),
-            ssh_username = self.server_user,
-            ssh_password = self.server_pass,
-            remote_bind_address = (self.db_host, self.db_port))
+        if self.connecting_through_ssh:
+            self.server = SSHTunnelForwarder(
+                (self.server_host, self.server_port),
+                ssh_username = self.server_user,
+                ssh_password = self.server_pass,
+                remote_bind_address = (self.db_host, self.db_port))
 
-        self.server.start()
+            self.server.start()
 
         self.conn = pymysql.connect(
             host = self.db_host,

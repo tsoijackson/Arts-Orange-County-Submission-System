@@ -4,6 +4,7 @@ from ast import literal_eval
 from database.submissions import SubmissionsDatabase
 from datetime import datetime
 
+
 submission_parser = reqparse.RequestParser()
 submission_parser.add_argument('submissions', action='append')
 
