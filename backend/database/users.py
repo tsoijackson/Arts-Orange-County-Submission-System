@@ -16,7 +16,6 @@ class UsersDatabase(Database):
     def get_user_list(self):
         self.cur.execute('SELECT user_id, user_first_name, user_last_name, user_title, user_email FROM users')
         result = self.cur.fetchall()
-        self.close_database_and_server()
         return result
 
     def get_user(self, email: str):
@@ -26,7 +25,7 @@ class UsersDatabase(Database):
         """.format(email)
         self.cur.execute(command)
         result = self.cur.fetchall()
-        self.close_database_and_server()
+        # self.close_database_and_server()
         return result
 
     def post_user(self, data):
@@ -38,5 +37,5 @@ class UsersDatabase(Database):
         self.cur.execute(command)
         self.conn.commit()
         data['user_id'] = self.cur.lastrowid
-        self.close_database_and_server()
+        # self.close_database_and_server()
         return data

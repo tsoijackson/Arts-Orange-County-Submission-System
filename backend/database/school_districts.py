@@ -7,7 +7,7 @@ class SchoolDistrictsDatabase(Database):
     def get_school_districts_list(self):
         self.cur.execute('SELECT district_id, district_name, district_mailbox_number FROM school_districts')
         result = self.cur.fetchall()
-        self.close_database_and_server()
+        # self.close_database_and_server()
         return result
 
     # def get_user(self, district_id: int):

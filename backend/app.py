@@ -33,7 +33,7 @@ api.add_resource(SubmissionsById,   '/submissions/<int:submission_id>')
 @application.route("/api")
 
 def main():
-    return "1000 Pieces Backend Restful Web Api Up and Running!"
+    return "Arts Orange County Backend Restful Web Api Up and Running!"
 
 if __name__ == "__main__":
     # Visit to Test http://localhost:5000/api

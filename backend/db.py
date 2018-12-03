@@ -42,6 +42,6 @@ class Database:
     def close_server(self):
         self.server.close()
 
-    def close_database_and_server(self):
-        self.conn.close()
-        self.server.close()
+    # def close_database_and_server(self):
+    #     self.conn.close()
+    #     self.server.close()
