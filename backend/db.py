@@ -25,6 +25,8 @@ class Database:
                 remote_bind_address = (self.db_host, self.db_port))
 
             self.server.start()
+        else:
+            self.server.local_bind_port = self.db_port
 
         self.conn = pymysql.connect(
             host = self.db_host,
