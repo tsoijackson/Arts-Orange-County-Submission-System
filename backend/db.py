@@ -25,16 +25,23 @@ class Database:
                 remote_bind_address = (self.db_host, self.db_port))
 
             self.server.start()
-        else:
-            self.server.local_bind_port = self.db_port
 
-        self.conn = pymysql.connect(
-            host = self.db_host,
-            port = self.server.local_bind_port,
-            user = self.db_user,
-            password = self.db_pass,
-            db = self.db_name,
-            cursorclass = pymysql.cursors.DictCursor)
+            self.conn = pymysql.connect(
+                host = self.db_host,
+                port = self.server.local_bind_port,
+                user = self.db_user,
+                password = self.db_pass,
+                db = self.db_name,
+                cursorclass = pymysql.cursors.DictCursor)
+        
+        else:
+            self.conn = pymysql.connect(
+                host = self.db_host,
+                port = self.db_port,
+                user = self.db_user,
+                password = self.db_pass,
+                db = self.db_name,
+                cursorclass = pymysql.cursors.DictCursor)
 
         self.cur = self.conn.cursor()
 
