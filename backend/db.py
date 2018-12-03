@@ -3,7 +3,7 @@ from sshtunnel import SSHTunnelForwarder
 
 class Database:
     def __init__(self):
-        self.connecting_through_ssh = True
+        self.connecting_through_ssh = False
 
         self.server_host = settings.SSH_HOST
         self.server_port = settings.SSH_PORT
@@ -38,10 +38,3 @@ class Database:
 
     def close_database(self):
         self.conn.close()
-
-    def close_server(self):
-        self.server.close()
-
-    # def close_database_and_server(self):
-    #     self.conn.close()
-    #     self.server.close()

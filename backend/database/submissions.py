@@ -54,7 +54,6 @@ class SubmissionsDatabase(Database):
         """
         self.cur.execute(command)
         result = self.cur.fetchall()
-        # self.close_database_and_server()
         return result
 
     def get_submissions(self, user_email: str):
@@ -87,7 +86,6 @@ class SubmissionsDatabase(Database):
         """.format(user_email)
         self.cur.execute(command)
         result = self.cur.fetchall()
-        # self.close_database_and_server()
         return result
 
     def post_submission(self, data):

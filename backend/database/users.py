@@ -25,7 +25,6 @@ class UsersDatabase(Database):
         """.format(email)
         self.cur.execute(command)
         result = self.cur.fetchall()
-        # self.close_database_and_server()
         return result
 
     def post_user(self, data):
@@ -37,5 +36,4 @@ class UsersDatabase(Database):
         self.cur.execute(command)
         self.conn.commit()
         data['user_id'] = self.cur.lastrowid
-        # self.close_database_and_server()
         return data

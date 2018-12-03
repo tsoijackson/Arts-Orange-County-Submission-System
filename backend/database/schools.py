@@ -20,7 +20,6 @@ class SchoolsDatabase(Database):
         """
         self.cur.execute(command)
         result = self.cur.fetchall()
-        # self.close_database_and_server()
         return result
 
     def get_schools(self, district_id: int):
@@ -40,5 +39,4 @@ class SchoolsDatabase(Database):
         """.format(district_id)
         self.cur.execute(command)
         result = self.cur.fetchall()
-        # self.close_database_and_server()
         return result
