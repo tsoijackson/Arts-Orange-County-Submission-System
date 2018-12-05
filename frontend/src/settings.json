@@ -1,0 +1,7 @@
+{
+    "backend" : {
+        "server": "167.99.109.168",
+        "port": 5000,
+        "constUrl": "/api"
+    }
+}
