@@ -35,12 +35,18 @@ class Submissions(Resource):
 
         return result
 
+    def delete(self):
+        result = { "submissions": [] }
+        data = submission_parser.parse_args()
+
+        submissionsDatabase = SubmissionsDatabase()
+        for submission_id in data['submissions']:
+            submission_id = literal_eval(submission_id)
+            result['submissions'].append( submissionsDatabase.delete_submission( submission_id ))
+
+        return result
+
 
 class SubmissionsByUser(Resource):
     def get(self, user_email=None):
         return SubmissionsDatabase().get_submissions(user_email)
-
-
-class SubmissionsById(Resource):
-    def delete(self, submission_id=None):
-        return SubmissionsDatabase().delete_submission(int(submission_id))

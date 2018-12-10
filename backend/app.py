@@ -6,7 +6,7 @@ import pymysql
 from resources.users import Users, UsersByEmail
 from resources.school_districts import SchoolDistrictsList
 from resources.schools import Schools, SchoolsByDistrict
-from resources.submissions import Submissions, SubmissionsByUser, SubmissionsById
+from resources.submissions import Submissions, SubmissionsByUser
 
 
 application = Flask(__name__)
@@ -28,12 +28,12 @@ api.add_resource(SchoolsByDistrict, '/schools/<int:district_id>')
 
 api.add_resource(Submissions, '/submissions')
 api.add_resource(SubmissionsByUser, '/submissions/<string:user_email>')
-api.add_resource(SubmissionsById,   '/submissions/<int:submission_id>')
+# api.add_resource(SubmissionsById,   '/submissions/<int:submission_id>')
 
 @application.route("/api")
 
 def main():
-    return "Arts OC Backend Restful Web Api Up and Running!"
+    return "Arts Orange County Backend Restful Web Api Up and Running!"
 
 if __name__ == "__main__":
     # Visit to Test http://localhost:5000/api
