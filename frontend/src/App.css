@@ -61,6 +61,31 @@
   left:7%;
 }
 
+/* label focus color */
+.input-field input[type=text]:focus + label {
+  color: #2196f3;
+}
+/* label underline focus color */
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid #2196f3;
+  box-shadow: 0 1px 0 0 #2196f3;
+}
+
+/* label focus color */
+.input-field input[type=Email]:focus + label {
+  color: #2196f3;
+}
+/* label underline focus color */
+.input-field input[type=Email]:focus {
+  border-bottom: 1px solid #2196f3;
+  box-shadow: 0 1px 0 0 #2196f3;
+}
+
+[type="checkbox"]+label {
+  margin-top: 50%;
+  margin-left: 50%;
+}
+
 /* student entries */
 .student-btn-wrapper{
   margin-top:5rem;

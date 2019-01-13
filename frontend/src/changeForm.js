@@ -22,8 +22,13 @@ class ChangeForm extends React.Component {
       additions: {}
     };
   }
+
   componentDidMount() {
+    console.log("modify")
     let apiString = '/api/submissions/' + this.props.match.params.unique_url
+
+    window.$("#combo-warning-modal").modal("open")
+
     Api.get(apiString)
       .then((ret_1) => {
         var applicant_dict = {}
@@ -73,6 +78,7 @@ class ChangeForm extends React.Component {
     })
   }
   extractArtistEntries = (givenDict, id) => {
+    console.log(givenDict)
     let tempArray = this.state.applicants;
     tempArray[id] = givenDict
     this.setState({
@@ -84,125 +90,158 @@ class ChangeForm extends React.Component {
       user_id: user_id
     })
   }
+
   submitStudentEntry = () => {
 
+    // console.log(this.state.applicants)
+    // console.log(this.state.additions)
+    if (Object.keys(this.state.deletions).length <= 0 && Object.keys(this.state.additions).length <= 0) {
+      this.modAction()
+    }
+    this.deletionAction()
+    this.postAction()
+  }
+
+  deletionAction = () => {
     // deletions
     if (Object.keys(this.state.deletions).length > 0) {
-      window.Materialize.toast("Beginning to delete the entry!", 10000)
+      window.Materialize.toast("Beginning to delete the entries!", 10000)
       console.log("deleting")
-      for (var key in this.state.deletions) {
-        console.log(key)
-        let delete_url = "/api/submissions/" + key
-        setTimeout(function(){
-          Api.del(delete_url)
-            .then((ret_1) => {
-              console.log(ret_1)
-              window.Materialize.toast("Successfully deleted the entry!", 10000)
-              console.log(this.state.deletions)
-            })
-            .catch((error) => {
+      console.log(this.state.deletions)
+      var deletion_list = []
 
-            })
-          }, 10000)
-        }
-        // deletion is reset to 0
-      this.setState({
-        deletions: {}
-      })
-    }
-    if (this.registerVerify()) {
-      if (Object.keys(this.state.additions).length > 0) {
-          window.Materialize.toast("Beginning to add the entries!", 10000)
-          console.log("adding")
-          for (var key in this.state.additions) {
-            this.state.additions[key] = this.state.applicants[key]
-          }
-          var result_array = []
-          console.log(this.state.additions)
-          for (var key in this.state.additions) {
-            var temp_json = this.state.additions[key]
-            console.log(temp_json)
-            temp_json["user_id"] = this.state.user_id
-            temp_json["submission_id"] = ""
-            temp_json["last_updated"] = ""
-            temp_json["school_address"] = ""
-            temp_json["artwork_votes"] = 0
-            result_array.push(temp_json)
-          }
-          let result_json = {
-            "submissions": result_array
-          }
-          result_json = JSON.stringify(result_json)
-          console.log(result_json)
+      for (var key in this.state.deletions){
+        deletion_list.push(this.state.deletions[key]["submission_id"])
+      }
+      let result_json = {
+        "submissions": deletion_list
+      }
+      console.log(result_json)
+      result_json = JSON.stringify(result_json)
+      console.log(result_json)
+      setTimeout(function(){
+        console.log('after');
+      },1000);
+      console.log("begin deleting")
+      Api.del('/api/submissions', result_json)
+        .then((ret_2) => {
+          console.log(ret_2)
+          window.Materialize.toast("Successfully deleted the entries!", 10000)
           setTimeout(function(){
-            Api.post('/api/submissions', result_json)
-            .then((ret_2) => {
-              console.log(ret_2)
-              window.Materialize.toast("Successfully added the entries!", 10000)
-            })
-            .catch((error) => {
-              window.$("#dropdown-alert-modal").modal("open")
-            })
-          }, 10000)
-        }
-        // modifications
-        if (Object.keys(this.state.applicants).length > 0) {
-          console.log("modifying")
-          window.Materialize.toast("Beginning to modify the entries!", 10000)
-          var result_array = []
-
-          for (var key in this.state.applicants) {
-            console.log(temp_json)
-            var temp_json = this.state.applicants[key]
-            temp_json["user_id"] = this.state.user_id
-            // temp_json["submission_id"] = ""
-            // temp_json["last_updated"] = ""
-            // temp_json["school_address"] = ""
-            // temp_json["artwork_votes"] = 0
-            result_array.push(temp_json)
-          }
-          let result_json = {
-            "submissions": result_array
-          }
-          result_json = JSON.stringify(result_json)
-          console.log(result_json)
-          Api.put('/api/submissions', result_json).then((ret_3) => {
-            console.log(ret_3)
-            window.Materialize.toast("Successfully modified the entries!", 10000)
-            // let confirmation_msg = "Congragulations! All changes have been registered!"
-            // document.getElementById("confirm-alert-body").innerHTML = confirmation_msg
-            // window.$("#confirm-alert-modal").modal("open")
-          }, 10000)
-        }
-
+            console.log('after');
+          },5000);
+          this.modAction()
+        })
+        .catch((error) => {
+          console.log(error)
+          window.$("#backend-alert-modal").modal("open")
+        })
+      // deletion is reset to 0
+      this.setState({deletions: {}})
     }
   }
 
 
-  registerVerify = () => {
+  postAction = async() => {
+    var verify_outcome = await(this.registerVerify())
+    if( verify_outcome && Object.keys(this.state.additions).length > 0) {
+      window.Materialize.toast("Beginning to add the entries!", 10000)
+      console.log("adding")
+      for (var key in this.state.additions) {
+        this.state.additions[key] = this.state.applicants[key]
+      }
+      var result_array = []
+      console.log(this.state.additions)
+      for (var key in this.state.additions) {
+        var temp_json = this.state.additions[key]
+        console.log(temp_json)
+        temp_json["user_id"] = this.state.user_id
+        temp_json["submission_id"] = ""
+        temp_json["last_updated"] = ""
+        temp_json["school_address"] = ""
+        temp_json["parent_email"] = ""
+        temp_json["artwork_votes"] = 0
+        result_array.push(temp_json)
+      }
+      let result_json = {
+        "submissions": result_array
+      }
+      result_json = JSON.stringify(result_json)
+      console.log(result_json)
+      Api.post('/api/submissions', result_json)
+      .then((ret_2) => {
+        console.log(ret_2)
+        window.Materialize.toast("Successfully added the entries!", 10000)
+        // this.modAction()
+        // localStorage.setItem("applicants", JSON.stringify(this.state.applicants))
+        // window.$("#combo-reminder-modal").modal("open")
+        window.location.reload()
+      })
+      .catch((error) => {
+        window.$("#backend-alert-modal").modal("open")
+      })
+      this.setState({additions: {}})
+    }
+  }
+
+  modAction = async() => {
+    var verify_outcome = await(this.registerVerify())
+    if (verify_outcome && Object.keys(this.state.applicants).length > 0) {
+      console.log("modifying")
+      window.Materialize.toast("Beginning to modify the entries!", 10000)
+      var result_array = []
+
+      for (var key in this.state.applicants) {
+        console.log(temp_json)
+        var temp_json = this.state.applicants[key]
+        temp_json["user_id"] = this.state.user_id
+        temp_json["parent_email"] = ""
+        // temp_json["submission_id"] = null
+        // temp_json["last_updated"] = null
+        // temp_json["school_address"] = null
+        temp_json["artwork_votes"] = 0
+        result_array.push(temp_json)
+      }
+      let result_json = {
+        "submissions": result_array
+      }
+      result_json = JSON.stringify(result_json)
+      console.log(result_json)
+      Api.put('/api/submissions', result_json).then((ret_3) => {
+        console.log(ret_3)
+        window.Materialize.toast("Successfully modified the entries!", 10000)
+      })
+    }
+  }
+
+  registerVerify = async() => {
+    var columnResult = await(this.columnCheck())
+    if (columnResult == true) {
       var filledNum = $("input").filter(function () {
         return $.trim($(this).val()).length == 0
       }).length
-      if (filledNum) {
+      console.log("filledNum")
+      console.log(filledNum)
+      if (filledNum > 0) {
         window.$("#fill-alert-modal").modal("open")
         return false
       } else {
-        // check to see if the register email is correct
-        // check to see if the parent email is correct
-        for (var key in this.state.applicants) {
-          var temp_json = this.state.applicants[key]
-          // console.log(temp_json["parent_email"])
-          if (this.isEmail(temp_json["parent_email"]) === false){
-            window.$("#email-alert-modal").modal("open")
-            return false
-          }
-        }
+        return true
       }
+    } else {
       return true
+    }
   }
-  isEmail = (email) => {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+
+  columnCheck = async() => {
+    $('input').each(function(index,data) {
+       var value = $(this).val();
+       if (value.includes("Select")) {
+         window.$("#dropdown-alert-modal").modal("open")
+         return false
+       }
+    });
+    return true
   }
 
   render() {
@@ -240,7 +279,17 @@ class ChangeForm extends React.Component {
           Please ensure all of the formatting for email entries are correct!
         </Modal>
         <Modal id="dropdown-alert-modal" header="Error">
-          Please try again! A common problem is not selecting all of the dropdowns!
+          Not all of the dropdowns are filled!
+        </Modal>
+        <Modal id="backend-alert-modal" header="Error">
+          There was a problem with the backend. Please try again!
+        </Modal>
+        <Modal id="combo-warning-modal" header="Warning">
+          We are currently encountering a technical issue with the combination of adding and modifying entries.
+          Please perform these two tasks seperately.
+        </Modal>
+        <Modal id="combo-reminder-modal" header="Reminder">
+          Friendly reminder to modify your entries again because there is currently technical issue with the combination of adding and modifying entries!
         </Modal>
         <Modal id='confirm-alert-modal' header="Confirmation">
           <div id="confirm-alert-body"></div>
